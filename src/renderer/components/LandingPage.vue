@@ -53,7 +53,7 @@
 
         this.mirrorJson.on('change', this.handleChangeMirror())
         this.mirrorJson.setSize('50%', '900px')
-        fs.readFile(path.resolve(__dirname, `../template/${this.template.type}Template.json`), (err, data) => {
+        fs.readFile(path.resolve(__static, `template/${this.template.type}Template.json`), (err, data) => {
           if (err) {
             console.error(err);
             return;
@@ -99,7 +99,7 @@
         }, [])
       },
       setPageCode() {
-        fs.readFile(path.resolve(__dirname, `../template/${this.template.type}Template.ejs`), (err, data) => {
+        fs.readFile(path.resolve(__static, `template/${this.template.type}Template.ejs`), (err, data) => {
           if (err) {
             console.error(err);
             return;
