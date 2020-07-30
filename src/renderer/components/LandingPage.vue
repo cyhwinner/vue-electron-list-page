@@ -85,12 +85,19 @@
 
           if(modelItem[1].type !== 'normal') {
             if (modelItem[1].type === 'map') {
-              let modelItemMap = JSON.parse(modelItem[1].map)
-              if (Array.isArray(modelItemMap)) {
-                modelItemMap = modelItemMap.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
+              let modelItemMap, mapLabel
+              try {
+                // 传入的map可以是字符串
+                modelItemMap = JSON.parse(modelItem[1].map)
+                if (Array.isArray(modelItemMap)) {
+                  modelItemMap = modelItemMap.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
+                }
+                mapLabel = modelItem[0] + 'Map';
+                !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
+              } catch(e) {
+                mapLabel = modelItem[1].map
               }
-              let mapLabel = modelItem[0] + 'Map';
-              !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
+              
               modelItem[1].map = mapLabel
             }
           }

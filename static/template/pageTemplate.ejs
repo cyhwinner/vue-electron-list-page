@@ -72,19 +72,21 @@
         :total="query.total"
         :current-page.sync="query.pageIndex"
         :query.sync="query"
-        @fetch="getMusicList"
+        @fetch="getList"
       />
     </content-box>
   </div>
 </template>
 
 <script>
-import * as musicService from './music-service'
 import { getButtonAuth } from 'service/common'
 import dayjs from 'dayjs'
+<%_ if(config.Url) {-%>
 import * as httpAgent from 'utils/http'
 
-<%- 'LIST_URL = "' + config.Url + '"' %>
+<%- 'let LIST_URL = "' + config.Url + '"' %>
+
+<%_ } %>
 export default {
   data() {
     return {
@@ -114,37 +116,27 @@ export default {
     },
     handleSearch() {
       this.query = Object.assign({}, this.query, this.search)
-      this.getMusicList(this.query)
+      this.getList(this.query)
     },
-    // 音乐列表数据
-    getMusicList(query) {
+    
+    getList(query) {
       this.query = query || this.query
       this.loading = true
       delete this.query.total
 
       this.httpGetList(this.query).subscribe(
         res => {
-          <%= 'this.list = res.data.' + config.dataList %>
+          <%= 'this.list = res.data.' + config.dataList || 'list' %>
           this.query.total = res.data.totalCount
           this.loading = false
-          if (this.list && this.list != []) {
-            var i
-            for (i in this.list) {
-              var minute = Math.floor(this.list[i].duration / 60)
-              var second = this.list[i].duration % 60
-              this.list[i].durationStr = minute + ':' + (second < 10 ? '0' + second : second)
-            }
-            setTimeout(() => {
-              this.$refs.singleTable.setCurrentRow(this.list[0])
-            }, 0)
-          }
+          
         },
         error => {
           this.loading = false
         }
       )
     },
-    httpGetList(param) {
+    httpGetList(params) {
       return httpAgent.GET(LIST_URL, params)
     }
   }
