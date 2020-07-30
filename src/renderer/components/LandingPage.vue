@@ -95,7 +95,7 @@
                 mapLabel = modelItem[0] + 'Map';
                 !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
               } catch(e) {
-                mapLabel = modelItem[1].map
+                mapLabel = modelItem[1].map + 'Map'
               }
               
               modelItem[1].map = mapLabel
