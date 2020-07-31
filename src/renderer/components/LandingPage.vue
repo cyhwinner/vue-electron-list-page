@@ -53,9 +53,10 @@
 
         this.mirrorJson.on('change', this.handleChangeMirror())
         this.mirrorJson.setSize('50%', '900px')
-        fs.readFile(path.resolve(__dirname, `../template/${this.template.type}Template.json`), (err, data) => {
+        console.log(__dirname)
+        fs.readFile(path.resolve(__static, `template/pageTemplate.json`), (err, data) => {
           if (err) {
-            console.error(err);
+            alert(err);
             return;
           }
           this.mirrorJson.setValue(data.toString())
@@ -66,7 +67,7 @@
           lineNumbers: true,
           mode: 'text/x-vue',
           theme: 'dracula',
-          gutters:["CodeMirror-lint-markers"],
+          // gutters:["CodeMirror-lint-markers"],
           lint: true,
           readOnly: true,
           tabSize: 2
@@ -99,7 +100,7 @@
         }, [])
       },
       setPageCode() {
-        fs.readFile(path.resolve(__dirname, `../template/${this.template.type}Template.ejs`), (err, data) => {
+        fs.readFile(path.resolve(__static, `template/${this.template.type}Template.ejs`), (err, data) => {
           if (err) {
             console.error(err);
             return;
