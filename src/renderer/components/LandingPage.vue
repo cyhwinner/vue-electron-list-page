@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import CodeMirror from 'codemirror'
+  import CodeMirror from 'codemirror/lib/codemirror.js'
   import fs from 'fs-extra'
   import path from 'path'
   import ejs from 'ejs'
