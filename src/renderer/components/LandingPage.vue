@@ -53,8 +53,7 @@
 
         this.mirrorJson.on('change', this.handleChangeMirror())
         this.mirrorJson.setSize('50%', '900px')
-        console.log(__dirname)
-        fs.readFile(path.resolve(__static, `template/pageTemplate.json`), (err, data) => {
+        fs.readFile(path.resolve(__static, `template/${this.template.type}Template.json`), (err, data) => {
           if (err) {
             alert(err);
             return;
@@ -86,12 +85,19 @@
 
           if(modelItem[1].type !== 'normal') {
             if (modelItem[1].type === 'map') {
-              let modelItemMap = JSON.parse(modelItem[1].map)
-              if (Array.isArray(modelItemMap)) {
-                modelItemMap = modelItemMap.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
+              let modelItemMap, mapLabel
+              try {
+                // 传入的map可以是字符串
+                modelItemMap = JSON.parse(modelItem[1].map)
+                if (Array.isArray(modelItemMap)) {
+                  modelItemMap = modelItemMap.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
+                }
+                mapLabel = modelItem[0] + 'Map';
+                !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
+              } catch(e) {
+                mapLabel = modelItem[1].map + 'Map'
               }
-              let mapLabel = modelItem[0] + 'Map';
-              !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
+              
               modelItem[1].map = mapLabel
             }
           }

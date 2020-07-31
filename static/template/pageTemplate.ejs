@@ -27,11 +27,24 @@
                 :value="value"
                 :key="value"></el-option>
             </el-select>
+<<<<<<< HEAD
           <%_ } else if(formItem[1].type === 'date'){ -%>
             <el-date-picker
               v-model="<%= 'search.' + formItem[0] %>"
               value-format="timestamp"
               type="date"
+=======
+          <%_ } else if(formItem[1].type === 'date' || formItem[1].type === 'datetime'){ -%>
+            <el-date-picker
+              v-model="<%= 'search.' + formItem[0] %>"
+              value-format="timestamp"
+            <%_  if(formItem[1].type == 'date') { _%>
+              type="date"
+            <%_ } else { _%>
+              type="datetime"
+              format="yyyy-MM-dd HH:mm:ss"
+            <%_ } -%>
+>>>>>>> fc52890580a3d15672f08c56289f2a116435a6d0
               placeholder="<%= '请选择' + formItem[1].label %>">
             </el-date-picker>
           <%_ } else {-%>
@@ -72,19 +85,33 @@
         :total="query.total"
         :current-page.sync="query.pageIndex"
         :query.sync="query"
+<<<<<<< HEAD
         @fetch="getMusicList"
+=======
+        @fetch="getList"
+>>>>>>> fc52890580a3d15672f08c56289f2a116435a6d0
       />
     </content-box>
   </div>
 </template>
 
 <script>
+<<<<<<< HEAD
 import * as musicService from './music-service'
 import { getButtonAuth } from 'service/common'
 import dayjs from 'dayjs'
 import * as httpAgent from 'utils/http'
 
 <%- 'LIST_URL = "' + config.Url + '"' %>
+=======
+import dayjs from 'dayjs'
+<%_ if(config.Url) {-%>
+import * as httpAgent from 'utils/http'
+
+<%- 'let LIST_URL = "' + config.Url + '"' %>
+
+<%_ } %>
+>>>>>>> fc52890580a3d15672f08c56289f2a116435a6d0
 export default {
   data() {
     return {
@@ -114,6 +141,7 @@ export default {
     },
     handleSearch() {
       this.query = Object.assign({}, this.query, this.search)
+<<<<<<< HEAD
       this.getMusicList(this.query)
     },
     // 音乐列表数据
@@ -138,14 +166,39 @@ export default {
               this.$refs.singleTable.setCurrentRow(this.list[0])
             }, 0)
           }
+=======
+      this.getList(this.query)
+    },
+    getList(query) {
+      this.query = query || this.query
+      this.loading = true
+      delete this.query.total
+      for(let key in this.query) {
+        if (this.query[key] == '') {
+          delete this.query[key]
+        }
+      }
+      this.httpGetList(this.query).subscribe(
+        res => {
+          <%= 'this.list = res.data.' + config.dataList || 'list' %>
+          this.query.total = res.data.totalCount
+          this.loading = false          
+>>>>>>> fc52890580a3d15672f08c56289f2a116435a6d0
         },
         error => {
           this.loading = false
         }
       )
     },
+<<<<<<< HEAD
     httpGetList(param) {
       return httpAgent.GET(LIST_URL, params)
+=======
+    httpGetList(params) {
+      <%_ if(config.Url) {-%>
+      return httpAgent.GET(LIST_URL, params)
+      <%_ } %>
+>>>>>>> fc52890580a3d15672f08c56289f2a116435a6d0
     }
   }
 }
