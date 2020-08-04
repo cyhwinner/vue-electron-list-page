@@ -26,6 +26,7 @@
   //   'page': ['pageTemplate.ejs', 'pageTemplate.json'],
   //   'modal': ['modalTemplate.ejs', 'modalTemplate.json']
   // }
+  let renderData = {}, renderMethods = []
   export default {
     name: 'landing-page',
     data() {
@@ -66,7 +67,7 @@
           lineNumbers: true,
           mode: 'text/x-vue',
           theme: 'dracula',
-          // gutters:["CodeMirror-lint-markers"],
+          gutters:["CodeMirror-lint-markers"],
           lint: true,
           readOnly: true,
           tabSize: 2
@@ -74,7 +75,7 @@
         this.mirrorPage.setSize('50%', '900px')
         
       },
-      formatData(model, renderData) {
+      formatData(model) {
         return Object.entries(model).reduce((pre, modelItem) => {
           if (!modelItem[1].label) {
             modelItem[1] = {
@@ -82,24 +83,23 @@
               label: modelItem[1]
             }
           }
-
-          if(modelItem[1].type !== 'normal') {
-            if (modelItem[1].type === 'map') {
-              let modelItemMap, mapLabel
-              try {
-                // 传入的map可以是字符串
-                modelItemMap = JSON.parse(modelItem[1].map)
-                if (Array.isArray(modelItemMap)) {
-                  modelItemMap = modelItemMap.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
-                }
-                mapLabel = modelItem[0] + 'Map';
-                !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
-              } catch(e) {
-                mapLabel = modelItem[1].map + 'Map'
-              }
-              
-              modelItem[1].map = mapLabel
+          const modelItemValue = modelItem[1]
+          const modelItemType = modelItemValue.type
+          if (modelItemType === 'map') {
+            let modelItemMap, mapLabel
+              // 传入的map可以是字符串
+            modelItemMap = modelItemValue.map
+            if (typeof modelItemMap === 'object') {
+              modelItemMap = this.normalizeMap(modelItemMap)
+              mapLabel = modelItem[0] + 'Map';
+              !renderData[mapLabel] && (renderData[mapLabel] = modelItemMap)
+            } else {
+              mapLabel = modelItemMap + 'Map'
             }
+            modelItemValue.map = mapLabel
+            // 可以再form和table里边加按钮 但是怎么写最好
+          } else if (modelItemType === 'button') {
+            renderMethods = renderMethods.concat(modelItemValue.buttons.map(button => button.method))
           }
           pre.push(modelItem)
           return pre;
@@ -117,16 +117,12 @@
           } catch(e) {
             model = eval('(' + this.mirrorJson.getValue() +')')
           }
-          let renderData = {}
           
-          model.form && (model.form = this.formatData(model.form, renderData))
-          model.table && (model.table = this.formatData(model.table, renderData))
+          model.form = model.form ? this.formatData(model.form) : []
+          model.table = model.table ? this.formatData(model.table) : []
           model.data = renderData
-          if (model.form == null || model.table == null) {
-            this.mirrorPage.setValue('')
-          } else {
-            this.mirrorPage.setValue(ejs.render(data.toString(), { config: model},))
-          }
+          model.methods = renderMethods
+          this.mirrorPage.setValue(ejs.render(data.toString(), { config: model},))
         })
       },
       handleChangeMirror() {
@@ -151,6 +147,10 @@
         document.execCommand('copy')
         document.body.removeChild(input)
         alert('复制成功')
+      },
+      normalizeMap(array) {
+        if (!Array.isArray(array)) return array
+        return array.reduce((pre, cur) => (pre[cur.label] = cur.value, pre), {})
       },
       handleChangeTemplate(val) {
         console.log(this.template.type)

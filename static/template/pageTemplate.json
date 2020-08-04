@@ -9,7 +9,7 @@
     "status": {
       "type": "map",
       "label": "状态",
-      "map": "[{\"label\": 1, \"value\": 2}]"
+      "map": [{"label": 1, "value": 2}]
     },
     "date": {
       "type": "date",
@@ -25,7 +25,12 @@
     "map": {
       "type": "map",
       "label": "状态",
-      "map": "{\"a\": 1, \"b\": 2}"
+      "map": {"a": 1, "b": 2}
+    },
+    "button": {
+      "type": "button",
+      "label": "操作",
+      "buttons": [{"name": "删除", "method": "handleDelete"}]
     }
   },
   "Url": "textadmin/AAA",

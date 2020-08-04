@@ -63,9 +63,9 @@
               <div><%= '{{' + tableValue.map + '[row.' + tableItem[0] + ']}}' %></div>
             <%_ } else if(tableValue.type === 'date') {-%>
               <div><%= '{{ row.' + tableItem[0] + ' | formatDate}}' %></div>
-            <%_ } else if (tableValue.type === 'button') {-%>
-              <%_ config.form.forEach(formItem => { -%>
-              <el-button></el-button>  
+            <%_ } else if (tableValue.type === 'tableButton') {-%>
+              <%_ tableValue.buttons.forEach(button => { -%>
+              <el-button @click="<%= button.method %>"><%= button.name %></el-button>
               <%_ }) -%>
             <%_ }-%>
             </template>
@@ -88,7 +88,6 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
 <%_ if(config.Url) {-%>
 import * as httpAgent from 'utils/http'
 
@@ -109,7 +108,6 @@ export default {
       },
       list: [],
       loading: false,
-      dayjs: dayjs,
       <%_ Object.keys(config.data).forEach(key => { -%>
       <%= key %>: <%- JSON.stringify(config.data[key]) %>,
       <%_ })-%>
@@ -150,7 +148,11 @@ export default {
       <%_ if(config.Url) {-%>
       return httpAgent.GET(LIST_URL, params)
       <%_ } %>
-    }
+    },
+    <%_ config.methods.forEach(method => { -%>
+    <%= method + '(){'%>
+    <%= '},'%>
+    <%_ })-%>
   }
 }
 </script>

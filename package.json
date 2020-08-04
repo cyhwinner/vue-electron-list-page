@@ -1,7 +1,7 @@
 {
   "name": "vue-electron",
   "productName": "vue-electron",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "cyhwinner <742746483@qq.com>",
   "description": "An electron-vue project",
   "license": null,
