@@ -2,10 +2,10 @@
   <div class="wrapper">
     <p class="mirror-title">自动生成搜索页</p>
     <div class="generate-x">
-      <select @change="handleChangeTemplate" v-model="template.type">
+      <!-- <select @change="handleChangeTemplate" v-model="template.type">
         <option value="page">列表页</option>
         <option value="modal">弹窗</option>
-      </select>
+      </select> -->
       <button class="mirror-btn mirror-btn-primary" @click="handleCopy">复制页面</button>
     </div>
     <section class="mirror-x">
